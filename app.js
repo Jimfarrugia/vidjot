@@ -38,6 +38,13 @@ app.use(methodOverride('_method'));
 // Flash middleware
 app.use(flash());
 
+// Express Session middleware
+app.use(session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true
+}))
+
 // Global variables
 app.use(function(req, res, next){
   res.locals.success_msg = req.flash('success_msg');
@@ -45,13 +52,6 @@ app.use(function(req, res, next){
   res.locals.error = req.flash('error');
   next();
 });
-
-// Express Session middleware
-app.use(session({
-  secret: 'secret',
-  resave: true,
-  saveUninitialized: true
-}))
 
 // Index Route
 app.get("/", (req, res) => {
@@ -115,6 +115,7 @@ app.post('/ideas', (req, res) => {
     new Idea(newUser)
       .save()
       .then(idea => {
+        req.flash('success_msg', "Video idea created.")
         res.redirect('/ideas');
       });
   }
@@ -124,12 +125,11 @@ app.post('/ideas', (req, res) => {
 app.put('/ideas/:id', (req, res) => {
   Idea.findOne({ _id: req.params.id })
   .then(idea => {
-    // new values
     idea.title = req.body.title;
     idea.details = req.body.details;
-
     idea.save()
       .then(idea => {
+        req.flash('success_msg', 'Video idea updated.');
         res.redirect('/ideas');
       })
   });
@@ -139,6 +139,7 @@ app.put('/ideas/:id', (req, res) => {
 app.delete('/ideas/:id', (req, res) => {
   Idea.deleteOne({ _id: req.params.id })
     .then(() => {
+      req.flash('success_msg', 'Video idea removed.');
       res.redirect('/ideas');
     })
 });
