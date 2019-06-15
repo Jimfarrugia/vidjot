@@ -64,9 +64,7 @@ app.get('/ideas/add', (req, res) => {
 
 // Edit Idea Form
 app.get('/ideas/edit/:id', (req, res) => {
-  Idea.findOne({
-    _id: req.params.id
-  })
+  Idea.findOne({ _id: req.params.id })
   .then(idea => {
     res.render('ideas/edit', {
       idea: idea
@@ -104,9 +102,7 @@ app.post('/ideas', (req, res) => {
 
 // process edit idea form
 app.put('/ideas/:id', (req, res) => {
-  Idea.findOne({
-    _id: req.params.id
-  })
+  Idea.findOne({ _id: req.params.id })
   .then(idea => {
     // new values
     idea.title = req.body.title;
@@ -117,6 +113,14 @@ app.put('/ideas/:id', (req, res) => {
         res.redirect('/ideas');
       })
   });
+});
+
+// delete idea
+app.delete('/ideas/:id', (req, res) => {
+  Idea.remove({ _id: req.params.id })
+    .then(() => {
+      res.redirect('/ideas');
+    })
 });
 
 const port = 5000;
